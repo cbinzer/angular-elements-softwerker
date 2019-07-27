@@ -1,16 +1,23 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-
-import { AppComponent } from './app.component';
+import { CUSTOM_ELEMENTS_SCHEMA, DoBootstrap, Injector, NgModule } from '@angular/core';
+import { createCustomElement } from '@angular/elements';
+import { HelloWorldComponent } from './hello-world.component';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+  declarations: [HelloWorldComponent],
+  entryComponents: [HelloWorldComponent],
+  imports: [BrowserModule],
+  bootstrap: [],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class AppModule { }
+export class AppModule implements DoBootstrap {
+  public constructor(private injector: Injector) {}
+
+  public ngDoBootstrap(): void {
+    const helloWorldCE = createCustomElement(HelloWorldComponent, {
+      injector: this.injector
+    });
+
+    customElements.define('hello-world', helloWorldCE);
+  }
+}
